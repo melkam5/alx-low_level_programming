@@ -1,41 +1,32 @@
-#include "holberton.h"
+#include "main.h"
 
 /**
- * append_text_to_file - function appends text to end of file
- *
- *@filename: char * to name of file being read
- *@text_content: char * to NULL terminated string to write
- *
- * Return:1 on success, -1 on failure
+ * append_text_to_file - appends text at the end of a file
+ * @filename: file to append the text to
+ * @text_content: content to append into the file
+ * Return: 1 on success and -1 on failure
  */
-
 int append_text_to_file(const char *filename, char *text_content)
 {
-	int fd, len, wryte;
+	int fd, t, s = 0;
 
-	/*check if arguments are present*/
-	if (filename == NULL)
+	if (!filename)
 		return (-1);
 
-	/*assign int to open function, check for errors*/
-	fd = open(filename, O_APPEND | O_WRONLY);
-	if (fd == -1)
+	fd = open(filename, O_WRONLY | O_APPEND);
+	if (fd < 0)
 		return (-1);
-	/*do this check after file is open so return can be 1, close file!*/
-	if (text_content == NULL)
+
+	if (text_content)
 	{
-		close(fd);
-		return (1);
+		while (text_content[s])
+			s++;
+		t = write(fd, text_content, s);
+		if (t != s)
+			return (-1);
 	}
-	/*find length of string to use as count in write function*/
-	for (len = 0; text_content[len] != '\0'; len++)
-		;
-	/*use fd as input for write instead of STDIN, len for count*/
-	wryte = write(fd, text_content, len);
-	if (wryte < 1)
-		return (-1);
-	/*remember to close!*/
+
 	close(fd);
-	/*returning 1 for success, but may need additional error checks*/
+
 	return (1);
 }

@@ -1,40 +1,32 @@
-#include "holberton.h"
+#include "main.h"
 
 /**
- * create_file - function creates a file
- *
- *@filename: char * to name of file being read
- *@text_content: char * to NULL terminated string to write
- *
- * Return:1 on success, -1 on failure
+ * create_file - creates a file and fills it with text
+ * @filename: name of the file to create
+ * @text_content: text to write in the file
+ * Return: 1 on success, -1 on failure
  */
-
 int create_file(const char *filename, char *text_content)
 {
-	int fd, len, wryte;
+	int fd, t, s = 0;
 
-	/*check if arguments are present*/
-	if (filename == NULL)
+	if (!filename)
 		return (-1);
-	/*assign int to open function, check for errors*/
-	fd = open(filename, O_CREAT | O_TRUNC | O_RDWR, 0600);
-	if (fd == -1)
+
+	fd = open(filename, O_CREAT | O_RDWR | O_TRUNC, 0600);
+	if (fd < 0)
 		return (-1);
-	/*create file if string is empty*/
-	if (text_content == NULL)
+
+	if (text_content)
 	{
-		close(fd);
-		return (1);
+		while (text_content[s])
+			s++;
+		t = write(fd, text_content, s);
+		if (t != s)
+			return (-1);
 	}
-	/*find length of string to use as count in write*/
-	for (len = 0; text_content[len] != '\0'; len++)
-		;
-	/*use fd as input for write instead of STDIN, len for count*/
-	wryte = write(fd, text_content, len);
-	if (wryte < 1)
-		return (-1);
-	/*remember to close!*/
+
 	close(fd);
-	/*returning 1 for success, but may need additional error check*/
+
 	return (1);
 }
